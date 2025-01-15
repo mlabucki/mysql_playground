@@ -30,7 +30,15 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/data", (req, res) => {
+app.get("/tutor", (req, res) => {
+  res.render("tutor");
+});
+
+app.get("/students", (req, res) => {
+  res.render("studentsRank");
+});
+
+app.get("/courses", (req, res) => {
   const query = "SELECT * FROM course"; // Replace with your table
   db.query(query, (err, results) => {
     if (err) {
