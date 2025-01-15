@@ -1,5 +1,6 @@
 const express = require("express");
 const mysql = require("mysql");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -20,16 +21,13 @@ db.connect((err) => {
   console.log("Connected to the MySQL database");
 });
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
-  res.send(`
-      <div>
-          <form>
-              <input placeholder="email" />
-              <input placeholder="password" />
-              <input placeholder="password confirmation" />
-          </form>
-      </div>
-      `);
+  res.render("index");
 });
 
 app.get("/data", (req, res) => {
@@ -40,7 +38,7 @@ app.get("/data", (req, res) => {
       res.status(500).send("Error fetching data");
       return;
     }
-    res.json(results);
+    res.render("table", { courses: results });
   });
 });
 
