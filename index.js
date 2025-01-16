@@ -34,12 +34,39 @@ app.get("/tutor", (req, res) => {
   res.render("tutor");
 });
 
-app.get("/students", (req, res) => {
-  res.render("studentsRank");
+app.get("/student", (req, res) => {
+  /* list of students and courses related to them with possibility to filter by Academical year */
+  const query =
+    "select course.Name, student.Name, course.Academical_year from course, student where Academical_year = '2024'";
+  // Replace with your table
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).send("Error fetching data");
+      return;
+    }
+    res.render("student", { students: results });
+  });
+});
+
+app.get("/tutor", (req, res) => {
+  /* Posibility to filter students and courses */
+  /*Authorization credential */
+  const query = "select * from tutor";
+  // Replace with your table
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).send("Error fetching data");
+      return;
+    }
+    res.render("tutor", { tutor: results });
+  });
 });
 
 app.get("/courses", (req, res) => {
-  const query = "SELECT * FROM course"; // Replace with your table
+  //list of courses //
+  const query = "SELECT * FROM course";
   db.query(query, (err, results) => {
     if (err) {
       console.error("Error fetching data:", err);
