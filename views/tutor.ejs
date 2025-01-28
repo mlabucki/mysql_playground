@@ -2,16 +2,32 @@
   <h1><%= title %></h1>
 
   <% if (data.length > 0) { %>
-  <div>
-    <div>
-      <% data.forEach(d => { %>
+  <div class="tutor-list">
+    <% data.forEach(d => { %>
+    <div class="tutor-container" id="tutor-<%= d.id %>">
+      <p><strong><%= d.first_name %> <%= d.last_name %></strong></p>
 
-      <p><%= d.tutor_id %></p>
-      <p><%= d.first_name %></p>
-      <% }); %>
+      <button onclick="toggleContactInfo('<%= d.id %>')">Contact</button>
+
+      <div class="contact-info" id="contact-<%= d.id %>" style="display: none">
+        <p>Phone: <%= d.phone %></p>
+        <p>Email: <%= d.email %></p>
+      </div>
     </div>
+    <% }); %>
   </div>
   <% } else { %>
   <p>No tutors</p>
   <% } %>
 </div>
+
+<script>
+  function toggleContactInfo(tutorId) {
+    const contactInfo = document.getElementById(`contact${tutorId}`);
+    if (contactInfo.style.display === "none") {
+      contactInfo.style.display = "block";
+    } else {
+      contactInfo.style.display = "none";
+    }
+  }
+</script>
