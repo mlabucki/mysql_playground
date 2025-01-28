@@ -1,44 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Courses Data</title>
-  </head>
-  <body>
+<div class="table-container">
+  <h1><%= tableTitle %></h1>
 
-      <h1>Course List</h1>
-      <% if (courses.length === 0) { %>
-      <p>No courses available.</p>
-      <% } else { %>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Course Name</th>
-            <th>Academical year</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Loop through the courses and display them in the table rows -->
-          <% courses.forEach(function(course) { %>
-          <tr>
-            <td><%= course.Course_id %></td>
-            <td><%= course.Name %></td>
-            <td><%= course.Academical_year %></td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
-      <% } %>
-      <br />
-      <button onclick="backMain()">Main Page</button>
-    </div>
-
-    <script>
-      function backMain() {
-        window.location.href = "/";
-      }
-    </script>
-    
-</html>
+  <% if (records.length > 0) { %>
+  <table>
+    <thead>
+      <tr>
+        <% Object.keys(records[0]).forEach(column => { %>
+        <th><%= column %></th>
+        <% }); %>
+      </tr>
+    </thead>
+    <tbody>
+      <% records.forEach(record => { %>
+      <tr>
+        <% Object.values(record).forEach(value => { %>
+        <td><%= value %></td>
+        <% }); %>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p>No students available</p>
+  <% } %>
+</div>

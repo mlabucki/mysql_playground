@@ -1,10 +1,18 @@
+require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql");
 const path = require("path");
-require("dotenv").config();
+const expressLayouts = require("express-ejs-layouts");
 
 const app = express();
 const port = 3000;
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.set("layout", "layout/layout");
+
+app.use(expressLayouts);
+app.use(express.static(path.join(__dirname, "public")));
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -21,59 +29,61 @@ db.connect((err) => {
   console.log("Connected to the MySQL database");
 });
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-app.use(express.static(path.join(__dirname, "public")));
-
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("home", {
+    title: "Home Page",
+  });
 });
-
+//query for average notes + render(table)
 app.get("/tutor", (req, res) => {
-  res.render("tutor");
+  const query = "SELECT * FROM tutor";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error tutor:", err);
+      res.status(500).send("Error fetching tutor data");
+      return;
+    }
+    res.render("tutor", {
+      title: "Tuto Page",
+      data: results,
+    });
+  });
 });
 
+app.get("/table/:tableName", (req, res) => {
+  const tableName = req.params.tableName;
+  const query = `SELECT * FROM ${tableName}`;
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error(`Error ${tableName}:`, err);
+      res.status(500).send("Error fetching table");
+      return;
+    }
+    res.render("table", {
+      tableTitle: `${tableName.charAt(0) + tableName.slice(1)} Table`,
+      records: result,
+    });
+  });
+});
+
+//crate queries for students data
 app.get("/student", (req, res) => {
-  /* list of students and courses related to them with possibility to filter by Academical year */
-  const query =
-    "select course.Name, student.Name, course.Academical_year from course, student where Academical_year = '2024'";
-  // Replace with your table
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching data:", err);
-      res.status(500).send("Error fetching data");
-      return;
-    }
-    res.render("student", { students: results });
-  });
-});
+  const query = "SELECT * FROM student";
 
-app.get("/tutor", (req, res) => {
-  /* Posibility to filter students and courses */
-  /*Authorization credential */
-  const query = "select * from tutor";
-  // Replace with your table
   db.query(query, (err, results) => {
     if (err) {
-      console.error("Error fetching data:", err);
-      res.status(500).send("Error fetching data");
+      console.error("Error student :", err);
+      res.status(500).send("Error student data");
       return;
     }
-    res.render("tutor", { tutor: results });
-  });
-});
 
-app.get("/courses", (req, res) => {
-  //list of courses //
-  const query = "SELECT * FROM course";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching data:", err);
-      res.status(500).send("Error fetching data");
-      return;
-    }
-    res.render("table", { courses: results });
+    res.render("table", {
+      title: "Students Page",
+      tableTitle: "Students Page",
+      records: results,
+    });
   });
 });
 

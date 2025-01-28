@@ -1,11 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tutor page</title>
-  </head>
-  <body>
-    <h1>Welcome "tutor name"</h1>
-  </body>
-</html>
+<div class="table-container">
+  <h1><%= title %></h1>
+
+  <% if (data.length > 0) { %>
+  <div>
+    <div>
+      <% data.forEach(d => { %>
+
+      <p><%= d.tutor_id %></p>
+      <p><%= d.first_name %></p>
+      <% }); %>
+    </div>
+  </div>
+  <% } else { %>
+  <p>No tutors</p>
+  <% } %>
+</div>
